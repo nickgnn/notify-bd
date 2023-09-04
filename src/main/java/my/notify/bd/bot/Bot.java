@@ -2,6 +2,7 @@ package my.notify.bd.bot;
 
 
 import my.notify.bd.dto.User;
+import my.notify.bd.jsonUtil.JsonUtil;
 import my.notify.bd.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +47,8 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         this.chatId = update.getMessage().getChatId();
+
+        JsonUtil.createJson(String.valueOf(this.chatId));
 
         if(update.hasMessage() && update.getMessage().hasText()) {
 
