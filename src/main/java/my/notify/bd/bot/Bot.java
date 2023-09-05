@@ -41,21 +41,21 @@ public class Bot extends TelegramLongPollingBot {
 
     public Bot(UserService userService) {
         this.userService = userService;
-        this.botState = BotState.getInitialState();
+        this.botState = BotState.getInitialState(getChatId());
     }
 
     @Override
     public void onUpdateReceived(Update update) {
         this.chatId = update.getMessage().getChatId();
 
-        JsonUtil.createJson(String.valueOf(this.chatId));
+//        JsonUtil.createJson(String.valueOf(this.chatId));
 
         if(update.hasMessage() && update.getMessage().hasText()) {
 
             String text = update.getMessage().getText();
 
             if (update.getMessage().getText().equals("/start")) {
-                this.botState = BotState.getInitialState();
+                this.botState = BotState.getInitialState(getChatId());
 
                 this.user = new User();
 

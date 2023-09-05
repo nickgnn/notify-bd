@@ -1,5 +1,6 @@
 package my.notify.bd.bot;
 
+import my.notify.bd.jsonUtil.JsonUtil;
 import my.notify.bd.service.UserService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -171,7 +172,9 @@ public enum BotState {
 
     private static BotState[] states;
     private final Logger logger = Logger.getLogger(BotState.class.getName());
-    public static BotState getInitialState() {
+    public static BotState getInitialState(Long chatId) {
+        JsonUtil.createJson(String.valueOf(chatId));
+
         return byId(0);
     }
 
