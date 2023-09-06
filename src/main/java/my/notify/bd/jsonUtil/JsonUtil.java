@@ -19,9 +19,9 @@ public class JsonUtil {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(getFileName(chatId)));
             User user = gson.fromJson(reader, User.class);
-            logger.info("USER RECEIVED SUCCESSFULLY");
+            logger.log(Level.INFO, "USER RECEIVED SUCCESSFULLY");
         }catch (IOException er){
-            logger.info(er.getMessage());
+            logger.log(Level.WARNING, er.getMessage());
         }
 
         return "";
@@ -40,7 +40,7 @@ public class JsonUtil {
 
             return user.toString();
         }catch (IOException | NullPointerException er){
-            logger.info(er.getMessage());
+            logger.log(Level.WARNING, er.getMessage());
         }
 
         return "";
@@ -52,9 +52,9 @@ public class JsonUtil {
         try {
             boolean newFile = json.createNewFile();
 
-            logger.info("Created file is: " + newFile);
+            logger.log(Level.INFO, "Created file is: " + newFile);
         } catch (IOException e) {
-            logger.info(e.getMessage());
+            logger.log(Level.WARNING, e.getMessage());
         }
     }
 

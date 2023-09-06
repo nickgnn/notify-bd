@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
@@ -128,7 +129,7 @@ public class Bot extends TelegramLongPollingBot {
 
             }
         } catch (TelegramApiException e) {
-            logger.info(e.getMessage() + " : " + e.getCause());
+            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
         }
 
         return user;
@@ -186,7 +187,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sm);
         } catch (TelegramApiException e) {
-            logger.info(e.getMessage() + " : " + e.getCause());
+            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
         }
     }
 
@@ -200,12 +201,12 @@ public class Bot extends TelegramLongPollingBot {
         sendMessage.setChatId(chatId);
         sendMessage.setText(message);
 
-        logger.info("CHAT_ID IS: " + this.getChatId());
+        logger.log(Level.INFO, "CHAT_ID IS: " + this.getChatId());
 
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            logger.info(e.getMessage() + " : " + e.getCause());
+            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
         }
     }
 
@@ -215,7 +216,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            logger.info(e.getMessage() + " : " + e.getCause());
+            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
         }
     }
 
