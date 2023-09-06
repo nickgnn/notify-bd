@@ -1,6 +1,7 @@
 package my.notify.bd.service.impl;
 
 import my.notify.bd.dto.User;
+import my.notify.bd.jsonUtil.JsonUtil;
 import my.notify.bd.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,42 +29,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getAllUsers() {
-        List<User> body = restTemplate.exchange(
-                crudUrl + "/api/users/all",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<User>>() {
-                }
-        ).getBody();
+    public String getAllUsers(String chatId) {
+//        List<User> body = restTemplate.exchange(
+//                crudUrl + "/api/users/all",
+//                HttpMethod.GET,
+//                null,
+//                new ParameterizedTypeReference<List<User>>() {
+//                }
+//        ).getBody();
+
+        return JsonUtil.getAllUsers(chatId);
 
 //        return body.size()!=0 ? concatResult(body) : "У тебя нету дружочков, балбес :)";
     }
 
     @Override
-    public void getOneUser(Long id) {
-        /*return restTemplate.exchange(
-                crudUrl + "/api/users" + id,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<User>() {
-                }
-        ).getBody();*/
+    public void getOneUser(String chatId, Long id) {
+        String oneUser = JsonUtil.getOneUser(chatId, id);
     }
 
     @Override
-    public void createUser(User user) {
+    public User createUser(User user) {
         /*return restTemplate.postForObject(
                 crudUrl + "/api/users/createUser",
                 new HttpEntity<>(user),
                 User.class);*/
+
+        return null;
+
     }
 
     @Override
-    public void updateUser(Long id, User user) {
+    public User updateUser(Long id, User user) {
         restTemplate.put(crudUrl + "/api/users" + id, user);
 
 //        return getOneUser(id);
+
+        return null;
     }
 
     @Override
@@ -72,9 +74,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getBirthday() {
+    public String getBirthday() {
 //        String URL = url + "api/seebd/ask";
 //        return restTemplate.getForObject(URL, String.class);
+
+        return "";
     }
 
     private String concatResult(List<User> list) {

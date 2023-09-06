@@ -34,7 +34,7 @@ public enum BotState {
                     userService.getBirthday();
                     break;
                 case "Показать":
-                    sm.setText("userService.getAllUsers()");
+                    sm.setText(userService.getAllUsers(String.valueOf(bot.getChatId())));
                     bot.sendMessage(sm);
                     break;
                 case "Добавить":

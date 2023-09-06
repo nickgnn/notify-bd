@@ -47,6 +47,13 @@
             <artifactId>telegrambots-spring-boot-starter</artifactId>
             <version>${telegrambots-starter.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
