@@ -1,15 +1,9 @@
 package my.notify.bd.service.impl;
 
 import my.notify.bd.dto.User;
+import my.notify.bd.jsonUtil.JsonUtil;
 import my.notify.bd.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -18,63 +12,42 @@ import java.util.Locale;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private RestTemplate restTemplate;
-    private String crudUrl;
 
-    @Autowired
-    public UserServiceImpl(RestTemplateBuilder restTemplateBuilder, @Value("${crudUrl}") String crudUrl) {
-        this.restTemplate = restTemplateBuilder.build();
-        this.crudUrl = crudUrl;
+    @Override
+    public String getAllUsers(String chatId) {
+        List<User> allUsers = JsonUtil.getAllUsers(chatId);
+
+        return allUsers.size()!=0 ? concatResult(allUsers) : "У тебя нету дружочков, балбес :)";
     }
 
     @Override
-    public void getAllUsers() {
-        List<User> body = restTemplate.exchange(
-                crudUrl + "/api/users/all",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<User>>() {
-                }
-        ).getBody();
-
-//        return body.size()!=0 ? concatResult(body) : "У тебя нету дружочков, балбес :)";
+    public void getOneUser(String chatId, Integer id) {
+        String oneUser = JsonUtil.getOneUser(chatId, id);
     }
 
     @Override
-    public void getOneUser(Long id) {
-        /*return restTemplate.exchange(
-                crudUrl + "/api/users" + id,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<User>() {
-                }
-        ).getBody();*/
+    public User createUser(User user, String chatId) {
+        return JsonUtil.createUser(user, chatId);
     }
 
     @Override
-    public void createUser(User user) {
-        /*return restTemplate.postForObject(
-                crudUrl + "/api/users/createUser",
-                new HttpEntity<>(user),
-                User.class);*/
-    }
-
-    @Override
-    public void updateUser(Long id, User user) {
-        restTemplate.put(crudUrl + "/api/users" + id, user);
+    public User updateUser(Integer id, User user) {
+//        restTemplate.put(crudUrl + "/api/users" + id, user);
 
 //        return getOneUser(id);
+
+        return null;
     }
 
     @Override
-    public void deleteUser(Long id) {
-//        restTemplate.delete(crudUrl + "/api/users/" + id);
+    public void deleteUser(Integer id, String chatId) {
+        JsonUtil.deleteUser(id, chatId);
     }
 
     @Override
-    public void getBirthday() {
-//        String URL = url + "api/seebd/ask";
-//        return restTemplate.getForObject(URL, String.class);
+    public String getBirthday() {
+
+        return "";
     }
 
     private String concatResult(List<User> list) {

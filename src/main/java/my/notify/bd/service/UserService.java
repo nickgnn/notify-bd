@@ -3,10 +3,10 @@ package my.notify.bd.service;
 import my.notify.bd.dto.User;
 
 public interface UserService {
-    void getAllUsers();
-    void getOneUser(Long id);
-    void createUser(User user);
-    void updateUser(Long id, User user);
-    void deleteUser(Long id);
-    void getBirthday();
+    String getAllUsers(String chatId);
+    void getOneUser(String chatId, Integer id);
+    User createUser(User user, String chatId);
+    User updateUser(Integer id, User user);
+    void deleteUser(Integer id, String chatId);
+    String getBirthday();
 }

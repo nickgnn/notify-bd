@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
@@ -40,7 +41,7 @@ public class Bot extends TelegramLongPollingBot {
 
     public Bot(UserService userService) {
         this.userService = userService;
-        this.botState = BotState.getInitialState();
+        this.botState = BotState.getInitialState(getChatId());
     }
 
     @Override
@@ -49,10 +50,8 @@ public class Bot extends TelegramLongPollingBot {
 
         if(update.hasMessage() && update.getMessage().hasText()) {
 
-            String text = update.getMessage().getText();
-
             if (update.getMessage().getText().equals("/start")) {
-                this.botState = BotState.getInitialState();
+                this.botState = BotState.getInitialState(getChatId());
 
                 this.user = new User();
 
@@ -125,7 +124,7 @@ public class Bot extends TelegramLongPollingBot {
 
             }
         } catch (TelegramApiException e) {
-            logger.info(e.getMessage() + " : " + e.getCause());
+            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
         }
 
         return user;
@@ -157,20 +156,20 @@ public class Bot extends TelegramLongPollingBot {
 
     public User fillDay(String data) {
         if (!data.equals("")) {
-            this.user.setDay(Long.valueOf(data));
+            this.user.setDay(Integer.valueOf(data));
         }
 
         return this.user;
     }
 
     public User fillAge(User user) {
-        this.user.setAge((long) (Calendar.getInstance(Locale.getDefault()).get(Calendar.YEAR) - user.getYear()));
+        this.user.setAge((Calendar.getInstance(Locale.getDefault()).get(Calendar.YEAR) - user.getYear()));
 
         return this.user;
     }
 
-    public void createUser(User user) {
-//        return userService.createUser(user);
+    public User createUser(User user, Long chatId) {
+        return userService.createUser(user, String.valueOf(chatId));
     }
 
     public void setIdForDelete() {
@@ -183,12 +182,12 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sm);
         } catch (TelegramApiException e) {
-            logger.info(e.getMessage() + " : " + e.getCause());
+            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
         }
     }
 
-    public void deleteUser(String id) {
-        userService.deleteUser(Long.valueOf(id));
+    public void deleteUser(String id, Long chatId) {
+        userService.deleteUser(Integer.valueOf(id), String.valueOf(chatId));
         this.botState = BotState.byId(0);
     }
 
@@ -197,12 +196,12 @@ public class Bot extends TelegramLongPollingBot {
         sendMessage.setChatId(chatId);
         sendMessage.setText(message);
 
-        logger.info("CHAT_ID IS: " + this.getChatId());
+        logger.log(Level.INFO, "CHAT_ID IS: " + this.getChatId());
 
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            logger.info(e.getMessage() + " : " + e.getCause());
+            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
         }
     }
 
@@ -212,7 +211,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            logger.info(e.getMessage() + " : " + e.getCause());
+            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
         }
     }
 
