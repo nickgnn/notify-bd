@@ -3,11 +3,7 @@ package my.notify.bd.service.impl;
 import my.notify.bd.dto.User;
 import my.notify.bd.jsonUtil.JsonUtil;
 import my.notify.bd.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -16,29 +12,12 @@ import java.util.Locale;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private RestTemplate restTemplate;
-    private String crudUrl;
-
-    @Autowired
-    public UserServiceImpl(RestTemplateBuilder restTemplateBuilder, @Value("${crudUrl}") String crudUrl) {
-        this.restTemplate = restTemplateBuilder.build();
-        this.crudUrl = crudUrl;
-    }
 
     @Override
     public String getAllUsers(String chatId) {
-//        List<User> body = restTemplate.exchange(
-//                crudUrl + "/api/users/all",
-//                HttpMethod.GET,
-//                null,
-//                new ParameterizedTypeReference<List<User>>() {
-//                }
-//        ).getBody();
-
         List<User> allUsers = JsonUtil.getAllUsers(chatId);
 
-//        return allUsers.size()!=0 ? concatResult(allUsers) : "У тебя нету дружочков, балбес :)";
-        return null;
+        return allUsers.size()!=0 ? concatResult(allUsers) : "У тебя нету дружочков, балбес :)";
     }
 
     @Override
@@ -53,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(Long id, User user) {
-        restTemplate.put(crudUrl + "/api/users" + id, user);
+//        restTemplate.put(crudUrl + "/api/users" + id, user);
 
 //        return getOneUser(id);
 

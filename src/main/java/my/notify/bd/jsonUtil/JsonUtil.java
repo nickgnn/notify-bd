@@ -5,14 +5,10 @@ import com.google.gson.internal.LinkedTreeMap;
 import my.notify.bd.dto.User;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class JsonUtil {
     private static final Gson gson = new Gson();
@@ -34,19 +30,18 @@ public class JsonUtil {
     public static List<User> getAllUsers(String chatId) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(getFileName(chatId)));
-            List<LinkedTreeMap<String, String>> users = gson.fromJson(reader, List.class);
+            List<LinkedTreeMap<String, Object>> users = gson.fromJson(reader, List.class);
 
-            if (users == null) {
-                logger.log(Level.WARNING, "ERROR: USERS ARE NULL");
-            } else {
+            if (users != null) {
+                List<User> userList = transferMapToList(users);
+
                 logger.log(Level.INFO, "USERS RECEIVED SUCCESSFULLY");
+
+                return userList;
+
+            } else {
+                logger.log(Level.WARNING, "ERROR: USERS ARE NULL");
             }
-
-            logger.log(Level.INFO, users.toString());
-
-
-
-            return null;
         }catch (IOException | NullPointerException er){
             logger.log(Level.WARNING, er.getMessage());
         }
@@ -60,19 +55,7 @@ public class JsonUtil {
             List<LinkedTreeMap<String, Object>> users = gson.fromJson(reader, List.class);
 
             if (users != null) {
-                List<User> userList = new ArrayList();
-
-                for (int i = 0; i < users.size(); i++) {
-                    LinkedTreeMap<String, Object> stringObjectLinkedTreeMap = users.get(i);
-
-                    userList.add(new User(
-                            ((Double) stringObjectLinkedTreeMap.get("id")).intValue(),
-                            (String) stringObjectLinkedTreeMap.get("name"),
-                            ((Double) stringObjectLinkedTreeMap.get("year")).intValue(),
-                            (String) stringObjectLinkedTreeMap.get("month"),
-                            ((Double) stringObjectLinkedTreeMap.get("day")).intValue(),
-                            ((Double) stringObjectLinkedTreeMap.get("age")).intValue()));
-                }
+                List<User> userList = transferMapToList(users);
 
                 user.setId(userList.size() + 1);
                 userList.add(user);
@@ -110,6 +93,24 @@ public class JsonUtil {
         } catch (IOException e) {
             logger.log(Level.WARNING, e.getMessage());
         }
+    }
+
+    private static List<User> transferMapToList(List<LinkedTreeMap<String, Object>> users) {
+        List<User> userList = new ArrayList<>();
+
+        for (int i = 0; i < users.size(); i++) {
+            LinkedTreeMap<String, Object> stringObjectLinkedTreeMap = users.get(i);
+
+            userList.add(new User(
+                    ((Double) stringObjectLinkedTreeMap.get("id")).intValue(),
+                    (String) stringObjectLinkedTreeMap.get("name"),
+                    ((Double) stringObjectLinkedTreeMap.get("year")).intValue(),
+                    (String) stringObjectLinkedTreeMap.get("month"),
+                    ((Double) stringObjectLinkedTreeMap.get("day")).intValue(),
+                    ((Double) stringObjectLinkedTreeMap.get("age")).intValue()));
+        }
+
+        return userList;
     }
 
     private static String getFileName(String chatId) {
