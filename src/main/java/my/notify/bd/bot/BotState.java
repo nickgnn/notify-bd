@@ -132,7 +132,7 @@ public enum BotState {
 
         @Override
         public void handleInput(Bot bot, BotState botState, Update update, UserService userService) {
-            bot.createUser(bot.fillAge(bot.createNewUser()));
+            bot.createUser(bot.fillAge(bot.createNewUser()), bot.getChatId());
             bot.setBotState(bot.getBotState().nextState());
             bot.sendMessage("Success! Новый дружок успешно добавлен в базу :)");
         }

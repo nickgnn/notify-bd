@@ -6,9 +6,6 @@ import my.notify.bd.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -38,9 +35,10 @@ public class UserServiceImpl implements UserService {
 //                }
 //        ).getBody();
 
-        return JsonUtil.getAllUsers(chatId);
+        List<User> allUsers = JsonUtil.getAllUsers(chatId);
 
-//        return body.size()!=0 ? concatResult(body) : "У тебя нету дружочков, балбес :)";
+//        return allUsers.size()!=0 ? concatResult(allUsers) : "У тебя нету дружочков, балбес :)";
+        return null;
     }
 
     @Override
@@ -49,14 +47,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User user) {
-        /*return restTemplate.postForObject(
-                crudUrl + "/api/users/createUser",
-                new HttpEntity<>(user),
-                User.class);*/
-
-        return null;
-
+    public User createUser(User user, String chatId) {
+        return JsonUtil.createUser(user, chatId);
     }
 
     @Override

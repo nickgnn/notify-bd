@@ -161,20 +161,20 @@ public class Bot extends TelegramLongPollingBot {
 
     public User fillDay(String data) {
         if (!data.equals("")) {
-            this.user.setDay(Long.valueOf(data));
+            this.user.setDay(Integer.valueOf(data));
         }
 
         return this.user;
     }
 
     public User fillAge(User user) {
-        this.user.setAge((long) (Calendar.getInstance(Locale.getDefault()).get(Calendar.YEAR) - user.getYear()));
+        this.user.setAge((Calendar.getInstance(Locale.getDefault()).get(Calendar.YEAR) - user.getYear()));
 
         return this.user;
     }
 
-    public void createUser(User user) {
-//        return userService.createUser(user);
+    public User createUser(User user, Long chatId) {
+        return userService.createUser(user, String.valueOf(chatId));
     }
 
     public void setIdForDelete() {
