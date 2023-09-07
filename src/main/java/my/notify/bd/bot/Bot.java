@@ -3,9 +3,13 @@ package my.notify.bd.bot;
 
 import my.notify.bd.dto.User;
 import my.notify.bd.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,18 +23,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Component
+@EnableScheduling
 @PropertySource("classpath:telegram.properties")
 public class Bot extends TelegramLongPollingBot {
-    private final Logger logger = Logger.getLogger(Bot.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(Bot.class.getName());
     private User user = new User();
     private Long chatId;
     private BotState botState;
 
-    @Autowired
     private final UserService userService;
 
     @Value("${bot.name}")
@@ -39,6 +41,7 @@ public class Bot extends TelegramLongPollingBot {
     @Value("${bot.token}")
     private String botToken;
 
+    @Autowired
     public Bot(UserService userService) {
         this.userService = userService;
         this.botState = BotState.getInitialState(getChatId());
@@ -124,7 +127,7 @@ public class Bot extends TelegramLongPollingBot {
 
             }
         } catch (TelegramApiException e) {
-            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
+            LOGGER.error(e.getMessage() + " : " + e.getCause());
         }
 
         return user;
@@ -168,8 +171,8 @@ public class Bot extends TelegramLongPollingBot {
         return this.user;
     }
 
-    public User createUser(User user, Long chatId) {
-        return userService.createUser(user, String.valueOf(chatId));
+    public void createUser(User user, Long chatId) {
+        userService.createUser(user, chatId);
     }
 
     public void setIdForDelete() {
@@ -182,12 +185,12 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sm);
         } catch (TelegramApiException e) {
-            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
+            LOGGER.error(e.getMessage() + " : " + e.getCause());
         }
     }
 
     public void deleteUser(String id, Long chatId) {
-        userService.deleteUser(Integer.valueOf(id), String.valueOf(chatId));
+        userService.deleteUser(Integer.valueOf(id), chatId);
         this.botState = BotState.byId(0);
     }
 
@@ -196,12 +199,12 @@ public class Bot extends TelegramLongPollingBot {
         sendMessage.setChatId(chatId);
         sendMessage.setText(message);
 
-        logger.log(Level.INFO, "CHAT_ID IS: " + this.getChatId());
+        LOGGER.info("CHAT_ID IS: " + this.getChatId());
 
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
+            LOGGER.error(e.getMessage() + " : " + e.getCause());
         }
     }
 
@@ -211,8 +214,16 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
+            LOGGER.error(e.getMessage() + " : " + e.getCause());
         }
+    }
+
+//    @Scheduled(cron = "35 6 18 * * *", zone = "Europe/Moscow")
+    @Scheduled(cron = "0 0 10,18 * * *", zone = "Europe/Moscow")
+    public void notifyBD() {
+        sendMessage(userService.getBirthday(getChatId()));
+
+        LOGGER.info("NOTIFY SENT");
     }
 
     public SendMessage sendKeyBoardMessage(Long chatId) {
@@ -267,7 +278,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public Logger getLogger() {
-        return logger;
+        return LOGGER;
     }
 
     public BotState getBotState() {

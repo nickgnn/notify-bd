@@ -2,11 +2,11 @@ package my.notify.bd.bot;
 
 import my.notify.bd.jsonUtil.JsonUtil;
 import my.notify.bd.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
-import java.util.logging.Logger;
 
 @Component
 public enum BotState {
@@ -31,7 +31,8 @@ public enum BotState {
 
             switch (seq[0]) {
                 case "Узнать":
-                    userService.getBirthday();
+                    sm.setText(userService.getBirthday(bot.getChatId()));
+                    bot.sendMessage(sm);
                     break;
                 case "Показать":
                     sm.setText(userService.getAllUsers(String.valueOf(bot.getChatId())));
@@ -171,7 +172,7 @@ public enum BotState {
     };
 
     private static BotState[] states;
-    private final Logger logger = Logger.getLogger(BotState.class.getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(BotState.class.getName());
     public static BotState getInitialState(Long chatId) {
         JsonUtil.createJson(String.valueOf(chatId));
 
