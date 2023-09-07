@@ -28,19 +28,36 @@ public class JsonUtil {
 
             } else {
                 logger.log(Level.WARNING, "ERROR: USERS ARE NULL");
+
+                return Collections.emptyList();
             }
         }catch (NullPointerException er){
             logger.log(Level.WARNING, er.getMessage());
         }
-
         return null;
+    }
+
+    private static void addFirstUser(User user, String chatId) throws IOException {
+        List<User> userList = new ArrayList();
+        user.setId(1);
+        userList.add(user);
+
+        FileWriter writer = new FileWriter(getFileName(chatId));
+        gson.toJson(userList, writer);
+        writer.flush();
     }
 
     public static void createUser(User user, String chatId) {
         try {
             List<LinkedTreeMap<String, Object>> mapUsers = getMapUsers(chatId);
 
-            if (mapUsers != null & mapUsers.size() != 0) {
+            if (mapUsers == null) {
+                addFirstUser(user, chatId);
+            }
+
+            if (mapUsers.size() == 0) {
+                addFirstUser(user, chatId);
+            } else {
                 List<User> userList = transferMapToList(mapUsers);
 
                 user.setId(userList.stream().max(Comparator.comparing(User::getId)).get().getId() + 1);
@@ -49,19 +66,10 @@ public class JsonUtil {
                 FileWriter writer = new FileWriter(getFileName(chatId));
                 gson.toJson(userList, writer);
                 writer.flush();
-
-            } else {
-                List<User> userList = new ArrayList();
-                user.setId(1);
-                userList.add(user);
-
-                FileWriter writer = new FileWriter(getFileName(chatId));
-                gson.toJson(userList, writer);
-                writer.flush();
             }
 
             logger.log(Level.INFO, "USER ADDED SUCCESSFULLY");
-        }catch (IOException er){
+        }catch (IOException | NullPointerException er){
             logger.log(Level.WARNING, er.getMessage());
         }
     }
