@@ -3,17 +3,19 @@ package my.notify.bd.jsonUtil;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import my.notify.bd.dto.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class JsonUtil {
     private static final Gson gson = new Gson();
 
-    private static final Logger logger = Logger.getLogger(JsonUtil.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtil.class.getName());
 
     public static List<User> getAllUsers(String chatId) {
         try {
@@ -22,17 +24,17 @@ public class JsonUtil {
             if (mapUsers != null) {
                 List<User> userList = transferMapToList(mapUsers);
 
-                logger.log(Level.INFO, "USERS RECEIVED SUCCESSFULLY");
+                LOGGER.info("USERS RECEIVED SUCCESSFULLY");
 
                 return userList;
 
             } else {
-                logger.log(Level.WARNING, "ERROR: USERS ARE NULL");
+                LOGGER.warn("ERROR: USERS ARE NULL");
 
                 return Collections.emptyList();
             }
         }catch (NullPointerException er){
-            logger.log(Level.WARNING, er.getMessage());
+            LOGGER.error(er.getMessage());
         }
         return null;
     }
@@ -68,9 +70,9 @@ public class JsonUtil {
                 writer.flush();
             }
 
-            logger.log(Level.INFO, "USER ADDED SUCCESSFULLY");
+            LOGGER.info("USER ADDED SUCCESSFULLY");
         }catch (IOException | NullPointerException er){
-            logger.log(Level.WARNING, er.getMessage());
+            LOGGER.error(er.getMessage());
         }
     }
 
@@ -88,12 +90,12 @@ public class JsonUtil {
                 writer.flush();
 
             } else {
-                logger.log(Level.WARNING, "ERROR: USERS ARE NULL");
+                LOGGER.warn("ERROR: USERS ARE NULL");
             }
 
-            logger.log(Level.INFO, "USER REMOVED SUCCESSFULLY");
+            LOGGER.info("USER REMOVED SUCCESSFULLY");
         }catch (IOException er){
-            logger.log(Level.WARNING, er.getMessage());
+            LOGGER.error(er.getMessage());
         }
     }
 
@@ -103,9 +105,9 @@ public class JsonUtil {
         try {
             boolean newFile = json.createNewFile();
 
-            logger.log(Level.INFO, "Created file is: " + String.valueOf(newFile).toUpperCase());
+            LOGGER.info("Created file is: " + String.valueOf(newFile).toUpperCase());
         } catch (IOException e) {
-            logger.log(Level.WARNING, e.getMessage());
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -141,7 +143,7 @@ public class JsonUtil {
 
             return users;
         } catch (IOException e) {
-            logger.log(Level.WARNING, e.getMessage() + " " + e.getCause());
+            LOGGER.error(e.getMessage() + " " + e.getCause());
         }
 
         return null;
