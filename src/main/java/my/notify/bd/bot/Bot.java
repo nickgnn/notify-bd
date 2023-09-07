@@ -169,7 +169,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public void createUser(User user, Long chatId) {
-        userService.createUser(user, String.valueOf(chatId));
+        userService.createUser(user, chatId);
     }
 
     public void setIdForDelete() {
@@ -187,7 +187,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public void deleteUser(String id, Long chatId) {
-        userService.deleteUser(Integer.valueOf(id), String.valueOf(chatId));
+        userService.deleteUser(Integer.valueOf(id), chatId);
         this.botState = BotState.byId(0);
     }
 

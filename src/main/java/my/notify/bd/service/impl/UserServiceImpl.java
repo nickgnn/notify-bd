@@ -1,17 +1,24 @@
 package my.notify.bd.service.impl;
 
+import my.notify.bd.dto.TimeDto;
 import my.notify.bd.dto.User;
 import my.notify.bd.jsonUtil.JsonUtil;
+import my.notify.bd.service.TimeService;
 import my.notify.bd.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private final TimeService timeService;
+
+    @Autowired
+    public UserServiceImpl(TimeService timeService) {
+        this.timeService = timeService;
+    }
 
     @Override
     public String getAllUsers(String chatId) {
@@ -21,24 +28,66 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getOneUser(String chatId, Integer id) {
-        String oneUser = JsonUtil.getOneUser(chatId, id);
+    public void createUser(User user, Long chatId) {
+        JsonUtil.createUser(user, String.valueOf(chatId));
     }
 
     @Override
-    public void createUser(User user, String chatId) {
-        JsonUtil.createUser(user, chatId);
+    public void deleteUser(Integer id, Long chatId) {
+        JsonUtil.deleteUser(id, String.valueOf(chatId));
     }
 
     @Override
-    public void deleteUser(Integer id, String chatId) {
-        JsonUtil.deleteUser(id, chatId);
+    public String getBirthday(Long chatId) {
+        List<User> allUsers = JsonUtil.getAllUsers(String.valueOf(chatId));
+
+        return isBirthDay(allUsers, timeService.getTimeDto());
     }
 
-    @Override
-    public String getBirthday() {
+    private String isBirthDay(Iterable<User> users, TimeDto timeDto) {
+        Iterator<User> iterator = users.iterator();
 
-        return "";
+        //Отсев по месяцам
+        while (iterator.hasNext()) {
+            if (!iterator.next().getMonth().equals(timeDto.getMonth())) {
+                iterator.remove();
+            }
+        }
+
+        //Отсев по числу месяца
+        iterator = users.iterator();
+        while (iterator.hasNext()) {
+            if (!String.valueOf(iterator.next().getDay()).equals(timeDto.getDayOfMonth())) {
+                iterator.remove();
+            }
+        }
+
+        //Преобразование в ArrayList
+        ArrayList<User> list = (ArrayList<User>)users;
+
+        //Проверка на наличие ДР (если лист пустой, то сегодня ни у кого нет ДР)
+        if (list.isEmpty()) {
+            return "Сегодня ни у кого нет ДР :(";
+        } else {
+            return concatResult(list, timeDto);
+        }
+    }
+
+    private String concatResult(ArrayList<User> list, TimeDto timeDto) {
+        StringBuilder stringBuilder = new StringBuilder("Сегодня ДР у ");
+
+        for (User user : list) {
+            stringBuilder
+                    .append(user.getName())
+                    .append(" ").append(user.getYear())
+                    .append(" ").append(user.getMonth())
+                    .append(" ").append(user.getDay())
+                    .append(", исполняется")
+                    .append(" ").append(timeDto.getYear() - user.getYear()).append(" годиков;")
+                    .append("\n");
+        }
+
+        return stringBuilder.toString();
     }
 
     private String concatResult(List<User> list) {

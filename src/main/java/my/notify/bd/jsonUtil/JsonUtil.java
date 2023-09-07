@@ -17,11 +17,10 @@ public class JsonUtil {
 
     public static List<User> getAllUsers(String chatId) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(getFileName(chatId)));
-            List<LinkedTreeMap<String, Object>> users = gson.fromJson(reader, List.class);
+            List<LinkedTreeMap<String, Object>> mapUsers = getMapUsers(chatId);
 
-            if (users != null) {
-                List<User> userList = transferMapToList(users);
+            if (mapUsers != null) {
+                List<User> userList = transferMapToList(mapUsers);
 
                 logger.log(Level.INFO, "USERS RECEIVED SUCCESSFULLY");
 
@@ -30,32 +29,19 @@ public class JsonUtil {
             } else {
                 logger.log(Level.WARNING, "ERROR: USERS ARE NULL");
             }
-        }catch (IOException | NullPointerException er){
+        }catch (NullPointerException er){
             logger.log(Level.WARNING, er.getMessage());
         }
 
         return null;
     }
 
-    public static String getOneUser(String chatId, Integer id) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(getFileName(chatId)));
-            User user = gson.fromJson(reader, User.class);
-            logger.log(Level.INFO, "USER RECEIVED SUCCESSFULLY");
-        }catch (IOException er){
-            logger.log(Level.WARNING, er.getMessage());
-        }
-
-        return "";
-    }
-
     public static void createUser(User user, String chatId) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(getFileName(chatId)));
-            List<LinkedTreeMap<String, Object>> users = gson.fromJson(reader, List.class);
+            List<LinkedTreeMap<String, Object>> mapUsers = getMapUsers(chatId);
 
-            if (users != null) {
-                List<User> userList = transferMapToList(users);
+            if (mapUsers != null & mapUsers.size() != 0) {
+                List<User> userList = transferMapToList(mapUsers);
 
                 user.setId(userList.stream().max(Comparator.comparing(User::getId)).get().getId() + 1);
                 userList.add(user);
@@ -82,11 +68,10 @@ public class JsonUtil {
 
     public static void deleteUser(Integer id, String chatId) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(getFileName(chatId)));
-            List<LinkedTreeMap<String, Object>> users = gson.fromJson(reader, List.class);
+            List<LinkedTreeMap<String, Object>> mapUsers = getMapUsers(chatId);
 
-            if (users != null) {
-                List<User> userList = transferMapToList(users);
+            if (mapUsers != null) {
+                List<User> userList = transferMapToList(mapUsers);
 
                 userList.removeIf(u -> id.equals(u.getId()));
 
@@ -102,11 +87,6 @@ public class JsonUtil {
         }catch (IOException er){
             logger.log(Level.WARNING, er.getMessage());
         }
-    }
-
-    public String getBirthday() {
-
-        return "";
     }
 
     public static void createJson(String chatId) {
@@ -142,5 +122,20 @@ public class JsonUtil {
     private static String getFileName(String chatId) {
         return "D://" + chatId + ".json";
 //        return "/home/gnn/" + chatId + ".json";
+    }
+
+    private static List<LinkedTreeMap<String, Object>> getMapUsers(String chatId) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(getFileName(chatId)));
+            List<LinkedTreeMap<String, Object>> users = gson.fromJson(reader, List.class);
+
+            reader.close();
+
+            return users;
+        } catch (IOException e) {
+            logger.log(Level.WARNING, e.getMessage() + " " + e.getCause());
+        }
+
+        return null;
     }
 }
