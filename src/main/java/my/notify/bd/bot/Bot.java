@@ -6,6 +6,8 @@ import my.notify.bd.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -23,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
+@EnableScheduling
 @PropertySource("classpath:telegram.properties")
 public class Bot extends TelegramLongPollingBot {
     private final Logger logger = Logger.getLogger(Bot.class.getName());
@@ -213,6 +216,13 @@ public class Bot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             logger.log(Level.WARNING, e.getMessage() + " : " + e.getCause());
         }
+    }
+
+    @Scheduled(cron = "0 0 10,18 * * *", zone = "Europe/Moscow")
+    public void notifyBD() {
+        sendMessage(userService.getBirthday(getChatId()));
+
+        logger.log(Level.INFO, "NOTIFY SENT");
     }
 
     public SendMessage sendKeyBoardMessage(Long chatId) {

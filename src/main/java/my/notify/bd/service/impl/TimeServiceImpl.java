@@ -11,7 +11,6 @@ import java.util.Locale;
 import java.util.Map;
 
 @Service
-@EnableScheduling
 public class TimeServiceImpl implements TimeService {
     @Override
     public TimeDto getTimeDto() {
@@ -27,18 +26,18 @@ public class TimeServiceImpl implements TimeService {
     private Map<String, String> parseMonth() {
         Map<String, String> map = new HashMap<>();
 
-        map.put("Jan","Янв");
-        map.put("Feb","Фев");
-        map.put("Mar","Мар");
-        map.put("Apr","Апр");
+        map.put("Jan","Январь");
+        map.put("Feb","Февраль");
+        map.put("Mar","Март");
+        map.put("Apr","Апрель");
         map.put("May","Май");
-        map.put("Jun","Июн");
-        map.put("Jul","Июл");
-        map.put("Aug","Авг");
-        map.put("Sep","Сен");
-        map.put("Oct","Окт");
-        map.put("Nov","Ноя");
-        map.put("Dec","Дек");
+        map.put("Jun","Июнь");
+        map.put("Jul","Июль");
+        map.put("Aug","Август");
+        map.put("Sep","Сентябрь");
+        map.put("Oct","Октябрь");
+        map.put("Nov","Ноябрь");
+        map.put("Dec","Декабрь");
 
         return map;
     }
