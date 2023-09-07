@@ -5,9 +5,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import my.notify.bd.dto.User;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -59,7 +57,7 @@ public class JsonUtil {
             if (users != null) {
                 List<User> userList = transferMapToList(users);
 
-                user.setId(userList.size() + 1);
+                user.setId(userList.stream().max(Comparator.comparing(User::getId)).get().getId() + 1);
                 userList.add(user);
 
                 FileWriter writer = new FileWriter(getFileName(chatId));

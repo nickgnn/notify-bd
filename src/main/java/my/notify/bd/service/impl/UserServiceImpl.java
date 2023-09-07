@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         for (User user : list) {
             stringBuilder
                     .append("{").append(user.getId()).append("} ")
-                    .append(" ").append(user.getName())
+                    .append(" ").append(user.getName() + ": ")
                     .append(" ").append(user.getYear())
                     .append(", ").append(user.getMonth())
                     .append(" ").append(user.getDay()).append(",")
