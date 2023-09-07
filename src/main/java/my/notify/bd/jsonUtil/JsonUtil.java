@@ -7,25 +7,15 @@ import my.notify.bd.dto.User;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class JsonUtil {
     private static final Gson gson = new Gson();
 
     private static final Logger logger = Logger.getLogger(JsonUtil.class.getName());
-
-    public static String getOneUser(String chatId, Long id) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(getFileName(chatId)));
-            User user = gson.fromJson(reader, User.class);
-            logger.log(Level.INFO, "USER RECEIVED SUCCESSFULLY");
-        }catch (IOException er){
-            logger.log(Level.WARNING, er.getMessage());
-        }
-
-        return "";
-    }
 
     public static List<User> getAllUsers(String chatId) {
         try {
@@ -47,6 +37,18 @@ public class JsonUtil {
         }
 
         return null;
+    }
+
+    public static String getOneUser(String chatId, Integer id) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(getFileName(chatId)));
+            User user = gson.fromJson(reader, User.class);
+            logger.log(Level.INFO, "USER RECEIVED SUCCESSFULLY");
+        }catch (IOException er){
+            logger.log(Level.WARNING, er.getMessage());
+        }
+
+        return "";
     }
 
     public static User createUser(User user, String chatId) {
@@ -74,7 +76,6 @@ public class JsonUtil {
                 writer.flush();
             }
 
-
             logger.log(Level.INFO, "USER ADDED SUCCESSFULLY");
         }catch (IOException er){
             logger.log(Level.WARNING, er.getMessage());
@@ -83,13 +84,46 @@ public class JsonUtil {
         return null;
     }
 
+    public static User updateUser(Integer id, User user){
+        return null;
+    }
+
+    public static void deleteUser(Integer id, String chatId) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(getFileName(chatId)));
+            List<LinkedTreeMap<String, Object>> users = gson.fromJson(reader, List.class);
+
+            if (users != null) {
+                List<User> userList = transferMapToList(users);
+
+                userList.removeIf(u -> id.equals(u.getId()));
+
+                FileWriter writer = new FileWriter(getFileName(chatId));
+                gson.toJson(userList, writer);
+                writer.flush();
+
+            } else {
+                logger.log(Level.WARNING, "ERROR: USERS ARE NULL");
+            }
+
+            logger.log(Level.INFO, "USER REMOVED SUCCESSFULLY");
+        }catch (IOException er){
+            logger.log(Level.WARNING, er.getMessage());
+        }
+    }
+
+    public String getBirthday() {
+
+        return "";
+    }
+
     public static void createJson(String chatId) {
         File json = new File(getFileName(chatId));
 
         try {
             boolean newFile = json.createNewFile();
 
-            logger.log(Level.INFO, "Created file is: " + newFile);
+            logger.log(Level.INFO, "Created file is: " + String.valueOf(newFile).toUpperCase());
         } catch (IOException e) {
             logger.log(Level.WARNING, e.getMessage());
         }

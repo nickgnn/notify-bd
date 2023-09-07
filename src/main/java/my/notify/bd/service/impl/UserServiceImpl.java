@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getOneUser(String chatId, Long id) {
+    public void getOneUser(String chatId, Integer id) {
         String oneUser = JsonUtil.getOneUser(chatId, id);
     }
 
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Long id, User user) {
+    public User updateUser(Integer id, User user) {
 //        restTemplate.put(crudUrl + "/api/users" + id, user);
 
 //        return getOneUser(id);
@@ -40,14 +40,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
-//        restTemplate.delete(crudUrl + "/api/users/" + id);
+    public void deleteUser(Integer id, String chatId) {
+        JsonUtil.deleteUser(id, chatId);
     }
 
     @Override
     public String getBirthday() {
-//        String URL = url + "api/seebd/ask";
-//        return restTemplate.getForObject(URL, String.class);
 
         return "";
     }

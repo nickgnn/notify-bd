@@ -155,7 +155,7 @@ public enum BotState {
 
         @Override
         public void handleInput(Bot bot, BotState botState, Update update, UserService userService) {
-            bot.deleteUser(update.getMessage().getText());
+            bot.deleteUser(update.getMessage().getText(), bot.getChatId());
             bot.sendMessage("Success! Пользователь успешно удалён.");
         }
 

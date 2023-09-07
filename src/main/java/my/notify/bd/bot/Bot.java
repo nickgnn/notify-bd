@@ -186,8 +186,8 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-    public void deleteUser(String id) {
-        userService.deleteUser(Long.valueOf(id));
+    public void deleteUser(String id, Long chatId) {
+        userService.deleteUser(Integer.valueOf(id), String.valueOf(chatId));
         this.botState = BotState.byId(0);
     }
 
