@@ -26,17 +26,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User user, String chatId) {
-        return JsonUtil.createUser(user, chatId);
-    }
-
-    @Override
-    public User updateUser(Integer id, User user) {
-//        restTemplate.put(crudUrl + "/api/users" + id, user);
-
-//        return getOneUser(id);
-
-        return null;
+    public void createUser(User user, String chatId) {
+        JsonUtil.createUser(user, chatId);
     }
 
     @Override

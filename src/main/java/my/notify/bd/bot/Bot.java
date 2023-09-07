@@ -168,8 +168,8 @@ public class Bot extends TelegramLongPollingBot {
         return this.user;
     }
 
-    public User createUser(User user, Long chatId) {
-        return userService.createUser(user, String.valueOf(chatId));
+    public void createUser(User user, Long chatId) {
+        userService.createUser(user, String.valueOf(chatId));
     }
 
     public void setIdForDelete() {

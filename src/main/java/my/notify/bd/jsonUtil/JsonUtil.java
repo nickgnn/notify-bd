@@ -49,7 +49,7 @@ public class JsonUtil {
         return "";
     }
 
-    public static User createUser(User user, String chatId) {
+    public static void createUser(User user, String chatId) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(getFileName(chatId)));
             List<LinkedTreeMap<String, Object>> users = gson.fromJson(reader, List.class);
@@ -78,12 +78,6 @@ public class JsonUtil {
         }catch (IOException er){
             logger.log(Level.WARNING, er.getMessage());
         }
-
-        return null;
-    }
-
-    public static User updateUser(Integer id, User user){
-        return null;
     }
 
     public static void deleteUser(Integer id, String chatId) {
