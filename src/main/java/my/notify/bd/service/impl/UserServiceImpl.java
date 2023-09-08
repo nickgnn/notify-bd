@@ -5,6 +5,8 @@ import my.notify.bd.dto.User;
 import my.notify.bd.jsonUtil.JsonUtil;
 import my.notify.bd.service.TimeService;
 import my.notify.bd.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class.getName());
 
     private final TimeService timeService;
 
@@ -24,7 +27,11 @@ public class UserServiceImpl implements UserService {
     public String getAllUsers(String chatId) {
         List<User> allUsers = JsonUtil.getAllUsers(chatId);
 
-        return allUsers.size()!=0 ? concatResult(allUsers) : "У тебя нету дружочков, балбес :)";
+        String result = allUsers.size() != 0 ? concatResult(allUsers) : "У тебя нету дружочков, балбес :)";
+
+        LOGGER.info(result);
+
+        return result;
     }
 
     @Override
