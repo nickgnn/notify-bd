@@ -3,6 +3,7 @@ package my.notify.bd.jsonUtil;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import my.notify.bd.dto.User;
+import my.notify.bd.dto.calculateAge.AgeCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JsonUtil {
     private static final Gson gson = new Gson();
@@ -24,17 +26,17 @@ public class JsonUtil {
             if (mapUsers != null) {
                 List<User> userList = transferMapToList(mapUsers);
 
-                LOGGER.info("USERS RECEIVED SUCCESSFULLY");
+                LOGGER.info("SUCCESS: УСПЕХ:) СПИСОК ВСЕХ ДРУЗЕЙ УСПЕШНО ПРЕДОСТАВЛЕН :)");
 
                 return userList;
 
             } else {
-                LOGGER.warn("ERROR: USERS ARE NULL");
+                LOGGER.warn("ERROR: ОШИБКА:( В СЬПИСЬКЕ ОТСУТСТВУЮТ ДРУЗЬЯ!!!");
 
                 return Collections.emptyList();
             }
         }catch (NullPointerException er){
-            LOGGER.error(er.getMessage());
+            LOGGER.error(er.getMessage() + "ОШИБКА:( -> У ТЕБЯ НПЕ, ПРИДУРОК");
         }
         return null;
     }
@@ -70,9 +72,9 @@ public class JsonUtil {
                 writer.flush();
             }
 
-            LOGGER.info("USER ADDED SUCCESSFULLY");
+            LOGGER.info("УСПЕХ: ДРУГ УСПЕШНО ДОБАВЛЕН:)");
         }catch (IOException | NullPointerException er){
-            LOGGER.error(er.getMessage());
+            LOGGER.error(er.getMessage() + " : " + er.getCause() + " ОШИБКА -> ДРУГ НЕ СОЗДАЛСЯ, ИЛИ У ТЕБЯ ОПЯТЬ НПЕ, ПРИДУРОК");
         }
     }
 
@@ -90,12 +92,34 @@ public class JsonUtil {
                 writer.flush();
 
             } else {
-                LOGGER.warn("ERROR: USERS ARE NULL");
+                LOGGER.warn("ERROR: USERS ARE NULL -> ОШИБКА НЕКОГО УДАЛЯТЬ, ПОТОМУ ЧТО У ТЕБЯ НЕТУ ДРУЖОЧЕКОВ, БАЛБЕС");
             }
 
-            LOGGER.info("USER REMOVED SUCCESSFULLY");
+            LOGGER.info("SUCCESS: УСПЕХ:) ПОЗДРАВЛЛЯЮ, БЫВШИЙ \"ДРУГ\" УСПЕШНО УДАЛЁН:) USER REMOVED SUCCESSFULLY");
         }catch (IOException er){
             LOGGER.error(er.getMessage());
+        }
+    }
+
+    public static void updateUserAge(User user, String chatId) {
+        user.setAge(AgeCalculator.getAge(user));
+        deleteUser(user.getId(), chatId);
+
+        List<LinkedTreeMap<String, Object>> mapUsers = getMapUsers(chatId);
+        List<User> userList = transferMapToList(mapUsers);
+
+        userList.add(user);
+        userList = userList.stream()
+                .sorted(Comparator.comparing(User::getId))
+                .collect(Collectors.toList());
+
+        try {
+            FileWriter writer = new FileWriter(getFileName(chatId));
+            gson.toJson(userList, writer);
+
+            writer.flush();
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage() + " : " + e.getCause() + " ОШИБКА:( ЧОТА НЕ ЗАПИСАЛОСЬ, IOException В МЕТОДЕ 'updateUserAge(User user, String chatId)'");
         }
     }
 
@@ -105,9 +129,9 @@ public class JsonUtil {
         try {
             boolean newFile = json.createNewFile();
 
-            LOGGER.info("Created file is: " + String.valueOf(newFile).toUpperCase());
+            LOGGER.info("Created file is: " + String.valueOf(newFile).toUpperCase() + " УСПЕХ:) -> ФАЙЛ СОЗДАЛСЯ УСПЕШНО");
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(e.getMessage() + " ОШИБКА:( ЧОТА ФАЙЛ НЕ СОЗДАЛСЯ");
         }
     }
 
@@ -143,7 +167,7 @@ public class JsonUtil {
 
             return users;
         } catch (IOException e) {
-            LOGGER.error(e.getMessage() + " " + e.getCause());
+            LOGGER.error(e.getMessage() + " " + e.getCause() + " IOException СМОТРИ В МЕТОДЕ 'getMapUsers(String chatId)'");
         }
 
         return null;

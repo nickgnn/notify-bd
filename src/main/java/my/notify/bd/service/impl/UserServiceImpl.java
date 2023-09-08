@@ -2,16 +2,23 @@ package my.notify.bd.service.impl;
 
 import my.notify.bd.dto.TimeDto;
 import my.notify.bd.dto.User;
+import my.notify.bd.dto.calculateAge.AgeCalculator;
 import my.notify.bd.jsonUtil.JsonUtil;
 import my.notify.bd.service.TimeService;
 import my.notify.bd.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class.getName());
 
     private final TimeService timeService;
 
@@ -24,7 +31,11 @@ public class UserServiceImpl implements UserService {
     public String getAllUsers(String chatId) {
         List<User> allUsers = JsonUtil.getAllUsers(chatId);
 
-        return allUsers.size()!=0 ? concatResult(allUsers) : "У тебя нету дружочков, балбес :)";
+        String result = allUsers.size() != 0 ? concatResult(allUsers) : "У тебя нету дружочков, балбес :)";
+
+        LOGGER.info(result);
+
+        return result;
     }
 
     @Override
@@ -41,10 +52,14 @@ public class UserServiceImpl implements UserService {
     public String getBirthday(Long chatId) {
         List<User> allUsers = JsonUtil.getAllUsers(String.valueOf(chatId));
 
-        return isBirthDay(allUsers, timeService.getTimeDto());
+        String birthDay = allUsers.size() != 0 ? isBirthDay(allUsers, timeService.getTimeDto(), String.valueOf(chatId)) : "У тебя нету дружочков, балбес :)";
+
+        LOGGER.info(birthDay);
+
+        return birthDay;
     }
 
-    private String isBirthDay(Iterable<User> users, TimeDto timeDto) {
+    private String isBirthDay(Iterable<User> users, TimeDto timeDto, String chatId) {
         Iterator<User> iterator = users.iterator();
 
         //Отсев по месяцам
@@ -69,22 +84,25 @@ public class UserServiceImpl implements UserService {
         if (list.isEmpty()) {
             return "Сегодня ни у кого нет ДР :(";
         } else {
-            return concatResult(list, timeDto);
+            return concatResult(list, chatId);
         }
     }
 
-    private String concatResult(ArrayList<User> list, TimeDto timeDto) {
-        StringBuilder stringBuilder = new StringBuilder("Сегодня ДР у ");
+    private String concatResult(ArrayList<User> list, String chatId) {
+        StringBuilder stringBuilder = new StringBuilder("Сегодня ДР у:" + '\n');
 
         for (User user : list) {
             stringBuilder
-                    .append(user.getName())
+                    .append("{").append(user.getId()).append("}")
+                    .append(" ").append(user.getName())
                     .append(" ").append(user.getYear())
                     .append(" ").append(user.getMonth())
                     .append(" ").append(user.getDay())
                     .append(", исполняется")
-                    .append(" ").append(timeDto.getYear() - user.getYear()).append(" годиков;")
+                    .append(" ").append(AgeCalculator.getAge(user)).append(" годиков;")
                     .append("\n");
+
+            JsonUtil.updateUserAge(user, chatId);
         }
 
         return stringBuilder.toString();
@@ -100,7 +118,7 @@ public class UserServiceImpl implements UserService {
                     .append(" ").append(user.getYear())
                     .append(", ").append(user.getMonth())
                     .append(" ").append(user.getDay()).append(",")
-                    .append(" ").append(Calendar.getInstance(Locale.getDefault()).get(Calendar.YEAR) - user.getYear())
+                    .append(" ").append(user.getAge())
                     .append("\n");
         }
 

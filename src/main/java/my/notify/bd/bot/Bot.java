@@ -2,6 +2,7 @@ package my.notify.bd.bot;
 
 
 import my.notify.bd.dto.User;
+import my.notify.bd.dto.calculateAge.AgeCalculator;
 import my.notify.bd.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +21,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 @Component
 @EnableScheduling
@@ -166,7 +165,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public User fillAge(User user) {
-        this.user.setAge((Calendar.getInstance(Locale.getDefault()).get(Calendar.YEAR) - user.getYear()));
+        this.user.setAge(AgeCalculator.getAge(user));
 
         return this.user;
     }
@@ -221,9 +220,10 @@ public class Bot extends TelegramLongPollingBot {
 //    @Scheduled(cron = "35 6 18 * * *", zone = "Europe/Moscow")
     @Scheduled(cron = "0 0 10,18 * * *", zone = "Europe/Moscow")
     public void notifyBD() {
-        sendMessage(userService.getBirthday(getChatId()));
+        String birthday = userService.getBirthday(getChatId());
+        sendMessage(birthday);
 
-        LOGGER.info("NOTIFY SENT");
+        LOGGER.info("NOTIFY SENT: " + birthday);
     }
 
     public SendMessage sendKeyBoardMessage(Long chatId) {
