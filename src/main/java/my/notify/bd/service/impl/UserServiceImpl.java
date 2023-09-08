@@ -81,11 +81,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private String concatResult(ArrayList<User> list, TimeDto timeDto) {
-        StringBuilder stringBuilder = new StringBuilder("Сегодня ДР у ");
+        StringBuilder stringBuilder = new StringBuilder("Сегодня ДР у:" + '\n');
 
         for (User user : list) {
             stringBuilder
-                    .append(user.getName())
+                    .append("{").append(user.getId()).append("}")
+                    .append(" ").append(user.getName())
                     .append(" ").append(user.getYear())
                     .append(" ").append(user.getMonth())
                     .append(" ").append(user.getDay())
