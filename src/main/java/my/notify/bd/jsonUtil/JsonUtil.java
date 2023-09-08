@@ -36,7 +36,7 @@ public class JsonUtil {
                 return Collections.emptyList();
             }
         }catch (NullPointerException er){
-            LOGGER.error(er.getMessage() + "ОШИБКА:( -> У ТЕБЯ НПЕ, ПРИДУРОК");
+            LOGGER.error(er.getMessage() + "ОШИБКА:( -> У ТЕБЯ НПЕ, ПРИДУРОК В МЕТОДЕ 'getAllUsers(String chatId)'");
         }
         return null;
     }
@@ -74,7 +74,7 @@ public class JsonUtil {
 
             LOGGER.info("УСПЕХ: ДРУГ УСПЕШНО ДОБАВЛЕН:)");
         }catch (IOException | NullPointerException er){
-            LOGGER.error(er.getMessage() + " : " + er.getCause() + " ОШИБКА -> ДРУГ НЕ СОЗДАЛСЯ, ИЛИ У ТЕБЯ ОПЯТЬ НПЕ, ПРИДУРОК");
+            LOGGER.error(er.getMessage() + " : " + er.getCause() + " ОШИБКА -> ДРУГ НЕ СОЗДАЛСЯ, ИЛИ У ТЕБЯ ОПЯТЬ НПЕ, ПРИДУРОК В МЕТОДЕ 'createUser(User user, String chatId)'");
         }
     }
 
@@ -97,7 +97,7 @@ public class JsonUtil {
 
             LOGGER.info("SUCCESS: УСПЕХ:) ПОЗДРАВЛЛЯЮ, БЫВШИЙ \"ДРУГ\" УСПЕШНО УДАЛЁН:) USER REMOVED SUCCESSFULLY");
         }catch (IOException er){
-            LOGGER.error(er.getMessage());
+            LOGGER.error(er.getMessage() + " У ТЕБЯ IOException, ПРИДУРОК, В МЕТОДЕ'deleteUser(Integer id, String chatId)'");
         }
     }
 
@@ -129,9 +129,13 @@ public class JsonUtil {
         try {
             boolean newFile = json.createNewFile();
 
-            LOGGER.info("Created file is: " + String.valueOf(newFile).toUpperCase() + " УСПЕХ:) -> ФАЙЛ СОЗДАЛСЯ УСПЕШНО");
+            if (newFile) {
+                LOGGER.info("Created file is: " + String.valueOf(newFile).toUpperCase() + " УСПЕХ:) -> ФАЙЛ СОЗДАЛСЯ УСПЕШНО");
+            } else {
+                LOGGER.info("Created file is: " + String.valueOf(newFile).toUpperCase() + " УСПЕХ:) -> ФАЙЛ УЖЕ СУЩЕСТВУЕТ");
+            }
         } catch (IOException e) {
-            LOGGER.error(e.getMessage() + " ОШИБКА:( ЧОТА ФАЙЛ НЕ СОЗДАЛСЯ");
+            LOGGER.error(e.getMessage() + " ОШИБКА:( ЧОТА ФАЙЛ НЕ СОЗДАЛСЯ В МЕТОДЕ 'createJson(String chatId)'");
         }
     }
 
@@ -167,7 +171,7 @@ public class JsonUtil {
 
             return users;
         } catch (IOException e) {
-            LOGGER.error(e.getMessage() + " " + e.getCause() + " IOException СМОТРИ В МЕТОДЕ 'getMapUsers(String chatId)'");
+            LOGGER.error(e.getMessage() + " " + e.getCause() + " У ТЕБЯ IOException, ПРИДУРОК, В МЕТОДЕ 'getMapUsers(String chatId)'");
         }
 
         return null;
