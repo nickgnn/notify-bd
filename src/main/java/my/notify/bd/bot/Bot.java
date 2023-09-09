@@ -217,11 +217,14 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-//    @Scheduled(cron = "35 6 18 * * *", zone = "Europe/Moscow")
-    @Scheduled(cron = "0 0 10,18 * * *", zone = "Europe/Moscow")
+    @Scheduled(cron = "40 1 12 * * *", zone = "Europe/Moscow")
+//    @Scheduled(cron = "0 0 10,18 * * *", zone = "Europe/Moscow")
     public void notifyBD() {
         String birthday = userService.getBirthday(getChatId());
-        sendMessage(birthday);
+
+        if (!birthday.contains(":(")) {
+            sendMessage(birthday);
+        }
 
         LOGGER.info("NOTIFY SENT: " + birthday);
     }

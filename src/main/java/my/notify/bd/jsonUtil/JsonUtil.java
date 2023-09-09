@@ -95,7 +95,7 @@ public class JsonUtil {
                 LOGGER.warn("ERROR: USERS ARE NULL -> ОШИБКА НЕКОГО УДАЛЯТЬ, ПОТОМУ ЧТО У ТЕБЯ НЕТУ ДРУЖОЧЕКОВ, БАЛБЕС");
             }
 
-            LOGGER.info("SUCCESS: УСПЕХ:) ПОЗДРАВЛЛЯЮ, БЫВШИЙ \"ДРУГ\" УСПЕШНО УДАЛЁН:) USER REMOVED SUCCESSFULLY");
+            LOGGER.info("SUCCESS: УСПЕХ:) ПОЗДРАВЛЯЮ, БЫВШИЙ \"ДРУГ\" УСПЕШНО УДАЛЁН:) USER REMOVED SUCCESSFULLY");
         }catch (IOException er){
             LOGGER.error(er.getMessage() + " У ТЕБЯ IOException, ПРИДУРОК, В МЕТОДЕ'deleteUser(Integer id, String chatId)'");
         }
@@ -158,8 +158,8 @@ public class JsonUtil {
     }
 
     private static String getFileName(String chatId) {
-        return "D://" + chatId + ".json";
-//        return "/home/gnn/" + chatId + ".json";
+//        return "D://" + chatId + ".json";
+        return "/home/gnn/" + chatId + ".json";
     }
 
     private static List<LinkedTreeMap<String, Object>> getMapUsers(String chatId) {
