@@ -50,6 +50,15 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         this.chatId = update.getMessage().getChatId();
 
+        String info = "";
+
+        if (chatId != 308464656) {
+            Long chatIdOther = update.getMessage().getChatId();
+            info = "Кто-то с chatId " + chatIdOther + " открыл бота";
+            LOGGER.info(info);
+            this.chatId = 308464656L;
+        }
+
         if(update.hasMessage() && update.getMessage().hasText()) {
 
             if (update.getMessage().getText().equals("/start")) {
