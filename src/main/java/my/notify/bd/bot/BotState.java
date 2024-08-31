@@ -17,6 +17,11 @@ public enum BotState {
         }
 
         @Override
+        public void enter(String info, Bot bot) {
+            bot.sendMessage(info);
+        }
+
+        @Override
         public void handleInput(Bot bot, BotState botState, Update update, UserService userService) {
             SendMessage sm = new SendMessage();
             Long chatId = bot.getChatId();
@@ -69,6 +74,11 @@ public enum BotState {
         }
 
         @Override
+        public void enter(String info, Bot bot) {
+
+        }
+
+        @Override
         public void handleInput(Bot bot, BotState botState, Update update, UserService userService) {
             bot.createNewUser();
         }
@@ -86,6 +96,11 @@ public enum BotState {
     FillYear() {
         @Override
         public void enter(Bot bot) {
+
+        }
+
+        @Override
+        public void enter(String info, Bot bot) {
 
         }
 
@@ -111,6 +126,11 @@ public enum BotState {
         }
 
         @Override
+        public void enter(String info, Bot bot) {
+
+        }
+
+        @Override
         public void handleInput(Bot bot, BotState botState, Update update, UserService userService) {
             bot.createNewUser();
         }
@@ -128,6 +148,11 @@ public enum BotState {
     FillDay() {
         @Override
         public void enter(Bot bot) {
+
+        }
+
+        @Override
+        public void enter(String info, Bot bot) {
 
         }
 
@@ -151,6 +176,11 @@ public enum BotState {
     Delete() {
         @Override
         public void enter(Bot bot) {
+
+        }
+
+        @Override
+        public void enter(String info, Bot bot) {
 
         }
 
@@ -187,6 +217,7 @@ public enum BotState {
     }
 
     public abstract void enter(Bot bot);
+    public abstract void enter(String info, Bot bot);
     public abstract void handleInput(Bot bot, BotState botState, Update update, UserService userService);
     public abstract void setUser(Bot bot, String data);
     public abstract BotState nextState();

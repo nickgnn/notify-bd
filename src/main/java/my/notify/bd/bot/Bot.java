@@ -50,12 +50,13 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         this.chatId = update.getMessage().getChatId();
 
-        String info = "";
+        // нагенерил случайный UUID, который просто заполняет строку, если строка переназначается, то значит кто-то пытался открыть бота
+        String anotherUserInfo = "62a3e8776ac449ac8d9a1af3940012a1";
 
         if (chatId != 308464656) {
             Long chatIdOther = update.getMessage().getChatId();
-            info = "Кто-то с chatId " + chatIdOther + " открыл бота";
-            LOGGER.info(info);
+            anotherUserInfo = "Кто-то с chatId " + chatIdOther + " открыл бота";
+            LOGGER.info(anotherUserInfo);
             this.chatId = 308464656L;
         }
 
@@ -66,8 +67,14 @@ public class Bot extends TelegramLongPollingBot {
 
                 this.user = new User();
 
-                botState.enter(this);
+                if (anotherUserInfo.contains("62a3e8776ac449ac8d9a1af3940012a1")) {
+                    botState.enter(this);
+                } else {
+                    botState.enter(anotherUserInfo,this);
+                }
+
                 botState.handleInput(this, botState, update, userService);
+
             } else {
                 if (botState.equals(BotState.Start)) {
                     botState.handleInput(this, botState, update, userService);
